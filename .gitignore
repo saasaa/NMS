@@ -27,10 +27,10 @@
 # special directories
 exe/
 wiki/
-Uebung\ 4/wfkterg/
 
 
 # special files
-.pdf
-.dat
-.txt
+*.pdf
+*.dat
+*.txt
+*.DS_Store

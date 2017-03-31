@@ -4,28 +4,31 @@ module funktionen_mod
 
 contains
 
-  real (real64) function trapezint(array,ndim,startint,endint,ersterindex,letzterindex) result(res)
+  real (real64) function trapezint(array,ndim,startintervall,endintervall,ersterindex,letzterindex) result(res)
     integer (int64) :: i
     integer (int64), intent(in) :: ndim
     integer (int64), optional, intent(in) :: ersterindex,letzterindex
     real (real64), dimension(ndim), intent(in) :: array
-    real (real64), intent(in) :: startint,endint
+    real (real64), intent(in) :: startintervall,endintervall
     integer (int64) :: startwert,endwert
     real (real64) :: hilf, schrittweite
 
     if ((present(ersterindex) .AND. present(letzterindex))) then
        startwert = ersterindex
        endwert   = letzterindex
+    else if (present(ersterindex)) then
+       startwert = ersterindex
+       endwert = ndim
     else if (present(letzterindex)) then
        startwert = 1_int64
-       endwert = ndim
+       endwert = letzterindex
     else
        startwert = 1_int64
        endwert   = ndim
     endif
 
 
-    schrittweite = (endint-startint)/ndim
+    schrittweite = (endintervall-startintervall)/ndim
 
     hilf =0.
 

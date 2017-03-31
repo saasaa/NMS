@@ -148,13 +148,17 @@ PROGRAM uebsp4
   psistartbetr = abs(psistart)**2
   !psibetr = abs(psi)**2
 
+  !trapezint(array,ndim,startint,endint,ersterindex,letzterindex)
+  istart = trapezint(array = psibetr,&
+       &ndim = n_dim,&
+       &startintervall = deltax*(1._real64-n_dim*0.5),&
+       &endintervall = deltax*(n_dim-n_dim*0.5))
 
-  istart = trapezint(psibetr,n_dim,deltax*(1._real64-n_dim*0.5),deltax*(n_dim-n_dim*0.5))
-
-  irechts = trapezint(psibetr, n_dim, &
-       &deltax*((nint(0.5*n_dim)+5_int64)-n_dim*0.5),&
-       &deltax*(n_dim-n_dim*0.5),&
-       &(nint(0.5*n_dim)+5_int64))
+  irechts = trapezint(array = psibetr,&
+       &ndim = n_dim,&
+       &startintervall = deltax*((nint(0.5*n_dim)+5_int64)-n_dim*0.5),&
+       &endintervall = deltax*(n_dim-n_dim*0.5),&
+       &ersterindex = (nint(0.5*n_dim)+5_int64))
 
   write(output_unit,*) istart, irechts, 100._real64*irechts/istart
 

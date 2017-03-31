@@ -1,5 +1,5 @@
 set term pdfcairo #enhanced
-set out 'matrix.pdf'
+set out '3dplot.pdf'
 
 #set sample 10000
 unset key
@@ -25,7 +25,8 @@ set cbrange [1E-3:]
 
 #plot "/Users/Saasaa/MEGA/TPH 1337/NMS & WiProg/UE4/sshfs/wfkterg/matrix.dat" matrix u (($1-64)*100/128):2:3 title " " w image
 
-plot "wfkterg/matrix.dat" matrix u (($1-64)*100/128):2:3 title " " w image
+#plot "wfkterg/matrix.dat" matrix u (($1-64)*100/128):2:3 title " " w image
+plot "wfkterg/matrix.dat" matrix u 1:2:3 title " " w image
 
 
 unset out

@@ -1,20 +1,31 @@
-module funktionen
+module funktionen_mod
   use iso_fortran_env
   implicit none
 
 contains
 
-  ! pure real (real64) function simpsonint(array,ndim,startwert,endwert) result(res)
-  !     use iso_fortran_env
-  !     implicit none
-  !     integer (int64), intent(in) :: ndim,startwert,endwert
-  !     real (real64), dimension(ndim), intent(in) :: array
-  !
-  !     if ( mod(endwert-startwert,2) /= 0 ) then
-  !         res = - 1
-  !     end if
-  !
-  ! end function
+  real (real64) function trapezint(array,ndim,startwert,endwert,startint,endint) result(res)
+    integer (int64) :: i
+    integer (int64), intent(in) :: ndim,startwert,endwert
+    real (real64), dimension(ndim), intent(in) :: array
+    real (real64), intent(in) :: startint,endint
+    real (real64) :: hilf, schrittweite
+
+    schrittweite = (endint-startint)/ndim
+
+    hilf =0.
+
+    do i = startwert, endwert, 1
+       if(i == startwert .OR. i == endwert) then
+          hilf = hilf + array(i)*0.5_real64
+       else
+          hilf = hilf + array(i)
+       end if
+    end do
+
+    res = hilf*schrittweite
+    !
+  end function trapezint
 
   !tridiagonale matrix in vektoren aufteilen
   subroutine matrixsplit(matrix,diagonalelements,upperelements,lowerelements,ndim)
@@ -60,4 +71,4 @@ contains
 
   end subroutine TDMA
 
-end module funktionen
+end module funktionen_mod

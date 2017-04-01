@@ -71,9 +71,9 @@ PROGRAM uebsp4
 
   !Anfangswellenfunktion
   !Wellenpaket:
-  !Startpunkt des Wellenpakets wird um 15 a.u. nach links verschoben
+  !Startpunkt des Wellenpakets wird um 10 a.u. nach links verschoben
   do i = 1, n_dim, 1
-     complexarg=dcmplx((-((deltax*(i-n_dim*0.5_real64))+10)**2)/(2*sigma**2),&
+     complexarg=dcmplx((-((deltax*(i-n_dim*0.5_real64))+20)**2)/(2*sigma**2),&
           &deltax*(i-n_dim*0.5_real64)*k0)
      psi(i) = zexp(complexarg)
   end do
@@ -101,7 +101,7 @@ PROGRAM uebsp4
   open(26, file='wfkterg/pot.dat', status='replace')
 
   do i = 1, n_dim, 1
-     write (26, *) deltax*(i-n_dim*0.5), potentialmatrix(i,i)/4
+     write (26, *) deltax*(i-n_dim*0.5), potentialmatrix(i,i)/6
   end do
   close(26, status='keep')
 
@@ -119,20 +119,19 @@ PROGRAM uebsp4
      psi = psihilf
      if ( mod(i,100)==0 ) then
         write(30,fmt="(512(F42.33))") (abs(psi(j))**2, j = 1, n_dim)
+        psifourierconv = real(abs(psi)**2,4)
+        call RPA(9,psifourierconv,1,psifourier,1)
+
+        !write(25,fmt="(256(F42.33))") (psifourier(abs(j)), j = -n_dim/4, _dim/4-1)
+        write(25,fmt="(256(F42.33))") (sqrt(psifourier(abs(j))**2 + psifourier(abs(256))**2), j = -n_dim/4, n_dim/4-1)
      end if
      if ( mod(i,iter/10)==0 ) then
         write(output_unit,*) l, "%"
         l=l+10
-        !psifourierconv = real(abs(psi)**2,4)
-        !call RPA(9,psifourierconv,1,psifourier,1)
-        !!
-        !!write(25,fmt="(256(F42.33))") (psifourier(abs(j)), j = -n_dim/4, !n_dim/4-1)
-        !write(25,fmt="(256(F42.33))") (sqrt(psifourier(abs(j))**2 + !psifourier(abs(256))**2), j = -n_dim/4, n_dim/4-1)
-
-
 
      end if
-     if ( i==nint(iter*1) ) then
+     ! psibetr wird gespeichert, bevor Oszillationen vom Rand einsetzen.
+     if ( i==nint(iter*0.72_real64) ) then
         psibetr = abs(psi)**2
      end if
   end do
@@ -153,9 +152,10 @@ PROGRAM uebsp4
 
   irechts = trapezint(array = psibetr,&
        &ndim = n_dim,&
-       &startintervall = deltax*((nint(0.5*n_dim)+5_int64)-n_dim*0.5),&
+       &startintervall = deltax*((nint(0.5_real64*n_dim)+5_int64)-n_dim*0.5_real64),&
        &endintervall = deltax*(n_dim-n_dim*0.5),&
-       &ersterindex = (nint(0.5*n_dim)+5_int64))
+       &ersterindex = (nint(0.5*n_dim)+5_int64),&
+       &letzterindex = n_dim)
 
   write(output_unit,*) istart, irechts, 100._real64*irechts/istart
 

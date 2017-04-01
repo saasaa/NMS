@@ -30,7 +30,7 @@ contains
 
     schrittweite = (endintervall-startintervall)/ndim
 
-    hilf =0.
+    hilf = 0.
 
     do i = startwert, endwert, 1
        if(i == startwert .OR. i == endwert) then

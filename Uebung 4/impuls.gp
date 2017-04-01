@@ -1,10 +1,10 @@
 set term pdfcairo #enhanced
-set out 'impuls3dplot.pdf'
+set out 'impuls3dlogplot.pdf'
 
 #set sample 10000
 unset key
 
-set title "UE4"
+set title "Betragsquadrat der Wellenfunktion im Impulsraum -- gespiegelt, logarithmisch"
 
 #set palette rgbformulae 33,13,10
 #set palette rgbformula -7,2,-7
@@ -19,13 +19,10 @@ set pm3d
 set pm3d map
 set pm3d interpolate 0,0
 set hidden3d
-#set log cb
+set log cb
 #set cbrange [1E-3:]
 
 
-#plot "/Users/Saasaa/MEGA/TPH 1337/NMS & WiProg/UE4/sshfs/wfkterg/matrix.dat" matrix u (($1-64)*100/128):2:3 title " " w image
-
-#plot "wfkterg/matrix.dat" matrix u (($1-64)*100/128):2:3 title " " w image
 plot "wfkterg/impuls.dat" matrix u 1:2:3 title " " w image
 
 

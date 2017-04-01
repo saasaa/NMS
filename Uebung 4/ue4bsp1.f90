@@ -6,7 +6,7 @@ PROGRAM uebsp4
   integer :: i,j,l,p
   real (real64), parameter :: PI_16 = 4 * atan (1.0_real64)
   integer (int64), parameter :: n_dim = 512_int64 !auch im output ändern
-  integer (int64), parameter :: iter =   61000
+  integer (int64), parameter :: iter =   90000
   ! Matrizen für SGL
   real (real64), dimension(n_dim,n_dim) :: einheitsmatrix
   real (real64), dimension(n_dim,n_dim) :: potentialmatrix
@@ -71,9 +71,10 @@ PROGRAM uebsp4
 
   !Anfangswellenfunktion
   !Wellenpaket:
-  !Startpunkt des Wellenpakets wird um 18 a.u. nach links verschoben
+  !Startpunkt des Wellenpakets wird um 15 a.u. nach links verschoben
   do i = 1, n_dim, 1
-     complexarg=dcmplx((-((deltax*(i-n_dim*0.5_real64))+15)**2)/(2*sigma**2),deltax*(i-n_dim*0.5_real64)*k0)
+     complexarg=dcmplx((-((deltax*(i-n_dim*0.5_real64))+10)**2)/(2*sigma**2),&
+          &deltax*(i-n_dim*0.5_real64)*k0)
      psi(i) = zexp(complexarg)
   end do
 
@@ -104,11 +105,9 @@ PROGRAM uebsp4
   end do
   close(26, status='keep')
 
-  open(40, file='wfkterg/impuls1.dat', status='replace')
-  open(41, file='wfkterg/impuls2.dat', status='replace')
-  open(42, file='wfkterg/impuls3.dat', status='replace')
-  open(43, file='wfkterg/impuls4.dat', status='replace')
-  open(44, file='wfkterg/impuls5.dat', status='replace')
+
+  open(25, file='wfkterg/impuls.dat', status='replace')
+
 
   j=0
   l=10
@@ -127,10 +126,13 @@ PROGRAM uebsp4
         !psifourierconv = real(abs(psi)**2,4)
         !call RPA(9,psifourierconv,1,psifourier,1)
         !!
-        !write(25,fmt="(512(F42.33))") (psifourier(abs(j)), j = -n_dim/2, !n_dim/2 - 1)
+        !!write(25,fmt="(256(F42.33))") (psifourier(abs(j)), j = -n_dim/4, !n_dim/4-1)
+        !write(25,fmt="(256(F42.33))") (sqrt(psifourier(abs(j))**2 + !psifourier(abs(256))**2), j = -n_dim/4, n_dim/4-1)
+
+
 
      end if
-     if ( i==nint(iter*0.8)  ) then
+     if ( i==nint(iter*1) ) then
         psibetr = abs(psi)**2
      end if
   end do
@@ -138,18 +140,13 @@ PROGRAM uebsp4
   close(30, status='keep')
   close(25, status='keep')
 
-  close(40, status='keep')
-  close(41, status='keep')
-  close(42, status='keep')
-  close(43, status='keep')
-  close(44, status='keep')
+
 
 
   psistartbetr = abs(psistart)**2
-  !psibetr = abs(psi)**2
+  psibetr = abs(psi)**2
 
-  !trapezint(array,ndim,startint,endint,ersterindex,letzterindex)
-  istart = trapezint(array = psibetr,&
+  istart = trapezint(array = psistartbetr,&
        &ndim = n_dim,&
        &startintervall = deltax*(1._real64-n_dim*0.5),&
        &endintervall = deltax*(n_dim-n_dim*0.5))

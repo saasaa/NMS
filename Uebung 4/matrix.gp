@@ -19,7 +19,7 @@ set pm3d
 set pm3d map
 set pm3d interpolate 0,0
 set hidden3d
-#set log cb
+set log cb
 set cbrange [1E-3:]
 
 

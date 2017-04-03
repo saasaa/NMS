@@ -1,10 +1,10 @@
 set term pdfcairo #enhanced
-set out 'impuls3dlogplot.pdf'
+set out 'impuls3dplot.pdf'
 
 #set sample 10000
 unset key
 
-set title "Betragsquadrat der Wellenfunktion im Impulsraum -- gespiegelt, logarithmisch"
+set title "Betragsquadrat der Wellenfunktion im Impulsraum"
 
 #set palette rgbformulae 33,13,10
 #set palette rgbformula -7,2,-7
@@ -19,7 +19,7 @@ set pm3d
 set pm3d map
 set pm3d interpolate 0,0
 set hidden3d
-set log cb
+#set log cb
 #set cbrange [1E-3:]
 
 

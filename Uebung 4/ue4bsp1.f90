@@ -24,7 +24,7 @@ PROGRAM uebsp4
   real (real64), dimension(n_dim) ::  psibetr, psistartbetr
   real (real64) :: istart, irechts!, t
 
-  real (real32), dimension(n_dim) :: psifourierconv, psifourier
+  complex (real32), dimension(n_dim) :: psifourierconv, psifourier
 
 
 
@@ -75,7 +75,7 @@ PROGRAM uebsp4
   do i = 1, n_dim, 1
      complexarg=dcmplx((-((deltax*(i-n_dim*0.5_real64))+20)**2)/(2*sigma**2),&
           &deltax*(i-n_dim*0.5_real64)*k0)
-     psi(i) = zexp(complexarg)
+     psi(i) = exp(complexarg)
   end do
 
   !psi=psi/(PI_16**(1._real64/4))
@@ -90,7 +90,6 @@ PROGRAM uebsp4
 
   hamiltonback = dcmplx(einheitsmatrix,&
        &(+0.5_real64*deltat*laplacematrix/(deltax**2) - deltat*potentialmatrix))
-
 
 
   ! Aufteilen der forward Hamiltonmatrix auf Vektoren
@@ -119,16 +118,16 @@ PROGRAM uebsp4
      psi = psihilf
      if ( mod(i,100)==0 ) then
         write(30,fmt="(512(F42.33))") (abs(psi(j))**2, j = 1, n_dim)
-        psifourierconv = real(abs(psi)**2,4)
-        call RPA(9,psifourierconv,1,psifourier,1)
 
-        !write(25,fmt="(256(F42.33))") (psifourier(abs(j)), j = -n_dim/4, _dim/4-1)
-        write(25,fmt="(256(F42.33))") (sqrt(psifourier(abs(j))**2 + psifourier(abs(256))**2), j = -n_dim/4, n_dim/4-1)
+        !typecasting zu single precision
+        psifourierconv = cmplx(psi)
+        call CFSTFT(-9,psifourierconv)
+        write(25,fmt="(512(F30.15))") (abs(psifourierconv(j))**2 , j = 1, n_dim)
+
      end if
      if ( mod(i,iter/10)==0 ) then
         write(output_unit,*) l, "%"
         l=l+10
-
      end if
      ! psibetr wird gespeichert, bevor Oszillationen vom Rand einsetzen.
      if ( i==nint(iter*0.72_real64) ) then
@@ -138,8 +137,6 @@ PROGRAM uebsp4
 
   close(30, status='keep')
   close(25, status='keep')
-
-
 
 
   psistartbetr = abs(psistart)**2

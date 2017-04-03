@@ -12,7 +12,7 @@ set key outside center bottom
 
 set yrange [0:0.6]
 do for [i=0:n]{
-plot 'wfkterg/matrix.dat'  matrix  using 1:3 every 1:1024:1:i w lines title "Wellenfunktion Psi(x)" , 'wfkterg/pot.dat' u 0:2 w lines title "Potentialbarriere - reskaliert"
+plot 'wfkterg/matrix.dat'  matrix  using 1:3 every 1:1024:1:i w lines title "Wellenfunktion |Psi(x)|^2" , 'wfkterg/pot.dat' u 0:2 w lines title "Potentialbarriere - reskaliert"
 i=i+10
 }
 

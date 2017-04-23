@@ -1,5 +1,5 @@
 set term pdfcairo #enhanced
-set out 'ortsraum3dlogplot.pdf'
+set out 'ortsraum3dplot.pdf'
 
 #set sample 10000
 unset key
@@ -19,7 +19,7 @@ set pm3d
 set pm3d map
 set pm3d interpolate 0,0
 set hidden3d
-set log cb
+#set log cb
 set cbrange [1E-3:]
 
 plot "wfkterg/matrix.dat" matrix u (($1-256)*100/512):2:3 title " " w image

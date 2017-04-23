@@ -1,38 +1,36 @@
-MODULE functions
-  USE iso_fortran_env
-  IMPLICIT NONE
-  PRIVATE
-  PUBLIC T, TSumme
-CONTAINS
+module functions
+  use iso_fortran_env
+  implicit none
+  private
+  public T, TSumme
+contains
 
   !
-  PURE REAL (real64) FUNCTION T(l,deltax_inv,ndim_inv)
-    REAL (real64), PARAMETER :: PI_16 = 4 * ATAN (1._real64)
-    INTEGER (int64), INTENT(in) :: l
-    REAL (real64), INTENT(in) :: deltax_inv, ndim_inv
+  pure real (real64) function T(l,deltax_inv,ndim_inv)
+    real (real64), parameter :: PI_16 = 4 * atan (1._real64)
+    integer (int64), intent(in) :: l
+    real (real64), intent(in) :: deltax_inv, ndim_inv
     T = 2*(PI_16*l*ndim_inv*deltax_inv)**2
-  END FUNCTION T
+  end function T
 
   !T(l=1,deltax_inv=deltax_inv,ndim_inv=n_dim_inv)
 
-  PURE REAL (real64) FUNCTION Tsumme(ndim,i,j,deltax_inv,ndim_inv)
-    REAL (real64), PARAMETER :: PI_16 = 4 * ATAN (1._real64)
-    REAL (real64), INTENT(in) :: deltax_inv, ndim_inv
-    INTEGER (int64), INTENT(in) :: ndim,i,j
-    INTEGER (int64) :: k
-    REAL (real64) :: hilf
+  pure real (real64) function Tsumme(ndim,i,j,deltax_inv,ndim_inv)
+    real (real64), parameter :: PI_16 = 4 * atan (1._real64)
+    real (real64), intent(in) :: deltax_inv, ndim_inv
+    integer (int64), intent(in) :: ndim,i,j
+    integer (int64) :: l
+    real (real64) :: hilf
     hilf = 0._real64
 
-    DO k = 1, ndim/2, 1
-       hilf = T(l=k,deltax_inv=deltax_inv,ndim_inv=ndim_inv)*&
-            &COS(2*PI_16*k*(i-j)*ndim_inv) + hilf
-    END DO
+    do l = 1, ndim/2, 1
+       hilf = T(l=l,deltax_inv=deltax_inv,ndim_inv=ndim_inv)*&
+            &cos(2*PI_16*l*(i-j)*ndim_inv) + hilf
+    end do
 
     Tsumme = hilf
 
-  END FUNCTION TSUMME
+  end function TSUMME
 
 
-
-
-END MODULE functions
+end module functions

@@ -6,7 +6,7 @@ program ue5
 
   integer (int64) :: i,j,k,fail
   real (real64), parameter :: pi_16 = 4 * atan (1.0_real64)
-  integer (int64), parameter :: n_dim = 128!dimension vom n
+  integer (int64), parameter :: n_dim = 200!dimension vom n
   real (real64) :: n_dim_inv
   real (real64) :: deltax_inv
 
@@ -20,10 +20,10 @@ program ue5
 
   real (real64) :: energie
 
-  real (real64), dimension(34816) :: work
+  real (real64), dimension(17408) :: work
 
 
-  deltax = 20._real64/n_dim
+  deltax = 25._real64/n_dim
   n_dim_inv = 1._real64/n_dim
   deltax_inv = 1._real64/deltax
   hamiltonmatrix=0._real64
@@ -66,27 +66,28 @@ program ue5
        & n_dim, & ! lda
        & ew, & ! w
        & work, & !work
-       & 4352, & !lwork
+       & 17408, & !lwork
        & fail) !info
 
+write(*,*) "fail:", fail
 
   open(21, file='eigenwerte.dat', status='replace')
 
-  do i=1,n_dim
+  do i=1,5
      write(21,*) ew(i)
+    write(*,*) ew(i)
      !write(21,*) hamiltonmatrix(i,3)
   end do
 
   close(21, status='keep')
 
-  !lanczos
+  open(22, file='eigenvek.dat', status='replace')
+  
+  do i=1, n_dim
+    write(22,*) (hamiltonmatrix(i,j),j=1,n_dim)    !EIGENVEKTOREN
+  end do 
 
-  forall(i=1:n_dim) v(i)=1._real64
-
-  v = v/sqrt(sum((abs(v)**2)))
-
-  write(*,*) dot_product(v,v)
-
-
+  close(22, status='keep')
 
 end program ue5
+

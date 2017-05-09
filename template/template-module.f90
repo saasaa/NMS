@@ -1,6 +1,9 @@
 module template
-  use iso_fortran_env
+  use iso_fortran_env, only : real32, int64
   implicit none
+
+  private
+  public :: test, templ
 
 contains
 

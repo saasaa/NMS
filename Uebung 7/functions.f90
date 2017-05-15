@@ -1,13 +1,59 @@
 module functions
   use iso_fortran_env, only : real64, int64
+  use pendulum_parameter, only : eta,natural_frequency_squared, reduced_force, driver_frequency, stepsize_time
   implicit none
 
   private
-  public :: trapezint
+  public :: runge_kutta, trapezint
 
 contains
 
-  real (real64) function trapezint(array,ndim,startintervall,endintervall,ersterindex,letzterindex) result(res)
+  pure function runge_kutta(y_vector, stepsize_h, timestep)
+
+    integer (int64), intent(in) :: timestep
+    real (real64), intent(in) :: stepsize_h
+    real (real64), dimension(0:2) :: runge_kutta
+    real (real64), dimension(0:2), intent(in) :: y_vector
+
+    real (real64), dimension(0:2) :: z, k1, k2, k3, k4
+
+    z = y_vector
+
+    k1 = assign_k(z,timestep)
+
+    z = y_vector + k1*stepsize_time*0.5_real64
+
+    k2 = assign_k(z,timestep)
+
+    z = y_vector + k2*stepsize_time*0.5_real64
+
+    k3 = assign_k(z, timestep)
+
+    z = y_vector + k3*stepsize_time
+
+    k4 = assign_k(z,timestep)
+
+    runge_kutta = y_vector + stepsize_time*(k1+2*k2+2*k3+k4)/6._real64
+
+  end function runge_kutta
+
+  pure function assign_k(z,timestep)
+
+    integer (int64), intent(in) :: timestep
+    real (real64), dimension(0:2), intent(in) :: z
+    real (real64), dimension(0:2) :: assign_k
+    real (real64), dimension(0:2) :: k
+
+
+    assign_k = [1._real64, z(2),&
+         & -2._real64*eta*z(2) - &
+         & natural_frequency_squared*sin(z(1)) + &
+         & reduced_force*sin(timestep*stepsize_time*driver_frequency)]
+
+  end function assign_k
+
+
+  pure real (real64) function trapezint(array,ndim,startintervall,endintervall,ersterindex,letzterindex) result(res)
     integer (int64) :: i
     integer (int64), intent(in) :: ndim
     integer (int64), optional, intent(in) :: ersterindex,letzterindex

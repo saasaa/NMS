@@ -4,14 +4,13 @@ module functions
   implicit none
 
   private
-  public :: runge_kutta, trapezint
+  public :: runge_kutta, trapezint, return_power
 
 contains
 
-  pure function runge_kutta(y_vector, stepsize_h, timestep)
+  pure function runge_kutta(y_vector, timestep)
 
     integer (int64), intent(in) :: timestep
-    real (real64), intent(in) :: stepsize_h
     real (real64), dimension(0:2) :: runge_kutta
     real (real64), dimension(0:2), intent(in) :: y_vector
 
@@ -42,7 +41,6 @@ contains
     integer (int64), intent(in) :: timestep
     real (real64), dimension(0:2), intent(in) :: z
     real (real64), dimension(0:2) :: assign_k
-    real (real64), dimension(0:2) :: k
 
 
     assign_k = [1._real64, z(2),&
@@ -92,5 +90,22 @@ contains
     res = hilf*schrittweite
     !
   end function trapezint
+
+
+
+  pure integer (int64) function return_power(arg)
+    integer (int64), intent(in) :: arg
+
+    !POPCNT(I) returns the number of bits set (’1’ bits) in the binary representation of I.
+
+    if(arg <= 0 .or. popcnt(arg) > 1) then
+       return_power = -1
+       return
+    end if
+    !TRAILZ returns the number of trailing zero bits of an integer. Fortran 2008 and later
+
+    return_power = trailz(arg)
+
+  end function return_power
 
 end module functions

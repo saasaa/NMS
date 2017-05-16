@@ -8,6 +8,7 @@ module pendulum_parameter
 
   real (real64), parameter :: PI = 4 * atan (1.0_real64)
   real (real64), parameter ::  gravitational_acceleration = 9.80665_real64
+  real (real64), parameter :: hh=6.626076e-34_real64 ! Js ! h
 
 
   real (real64), parameter :: length_of_pendulum = 2.451662499_real64   !meter
@@ -23,7 +24,9 @@ module pendulum_parameter
   real (real64), parameter :: natural_frequency = &
        &sqrt(gravitational_acceleration/length_of_pendulum)
 
-  real (real64), parameter :: stepsize_time = PI/(natural_frequency*30._real64) ! Schrittweite 1/60. der Periode in s (dt)
+  real (real64), parameter :: stepsize_time = PI/(natural_frequency*30._real64)
+  real (real64), parameter :: h_bar_times_omega0 = &
+       & hh*natural_frequency/(2._real64*PI)
 
 
 
@@ -35,5 +38,7 @@ module pendulum_parameter
   public :: stepsize_time
   public :: mass_of_pendulum
   public :: natural_frequency
+  public :: h_bar_times_omega0
+  public :: length_of_pendulum
 
 end module pendulum_parameter

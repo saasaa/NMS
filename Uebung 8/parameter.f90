@@ -11,6 +11,9 @@ module parameter
 
   real (real64), parameter :: PI = 4 * atan (1.0_real64)
   real (real64), parameter :: hbar=6.582122e-22_real64 ! MeVs
+  real (real64), parameter :: hbaratto=6.582122e-4_real64 ! MeVas
+
+
 
   real (real64), parameter :: mass_of_neutron=939.56563_real64  ! MeV
   real (real64), parameter :: atomic_mass_unit=931.49432_real64     ! MeV
@@ -30,8 +33,14 @@ module parameter
 
   ! parameters of additiona Gauss potential
   real (real64), parameter :: V1 = 18._real64 !MeV
+  !real (real64), parameter :: V1 = 0._real64 !MeV
   real (real64), parameter :: R1 = 6.00_real64 !fm
   real (real64), parameter :: a1 = 4.0_real64 !fm**2
+
+  !argand
+  complex (real64), parameter :: ci=(0,1)
+  complex (real64), dimension(NEmax) :: S
+  real (real64), parameter :: alpha = 0.02_real64
 
   ! derived quantities
   real (real64), parameter :: reduced_mass = &

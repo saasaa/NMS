@@ -14,21 +14,29 @@ program ue8
 
 
 
-  do i = 1, NEmax, 1
-     energy =energy_max - (i-1)*energy_step
-     !energy=Emax-(i-1)*dE
+  !do i = 1, NEmax, 1
+  energy =energy_max - (i-1)*energy_step
+  !energy=Emax-(i-1)*dE
 
-     wave_function = numerov(energy=energy, l=l, direction_forward=.true.)
+  energy = 80._real64
 
-     call bessel(Sqrt(mhb2*energy)*(Nrmax-1)*stepsize_r,l,bessel1,neu1)
-     call bessel(Sqrt(mhb2*energy)*(Nrmax)*stepsize_r,l,bessel2,neu2)
+  wave_function = numerov(energy=energy, l=l, direction_forward=.false.)
 
-     delta(i) = &
-          & atan((wave_function(Nrmax-1)*bessel2-wave_function(Nrmax)*bessel1)&
-          &/(wave_function(Nrmax-1)*neu2-wave_function(Nrmax)*neu1)*(-1))
-     !woher -1?
+  !do i = 1, Nrmax, 1
+  !write(*,*) i*stepsize_r, wave_function(i)
+  !end do
 
-  end do
+  write(*,*) wave_function(Nrmax)
+
+  call bessel(Sqrt(mhb2*energy)*(Nrmax-1)*stepsize_r,l,bessel1,neu1)
+  call bessel(Sqrt(mhb2*energy)*(Nrmax)*stepsize_r,l,bessel2,neu2)
+
+  delta(i) = &
+       & atan((wave_function(Nrmax-1)*bessel2-wave_function(Nrmax)*bessel1)&
+       &/(wave_function(Nrmax-1)*neu2-wave_function(Nrmax)*neu1)*(-1))
+  !woher -1?
+
+  !end do
 
 
   open(unit=31, file="streu_delta_l=2_v1=0.dat", status="replace")
@@ -60,24 +68,27 @@ program ue8
      S(i)=exp(ci*2*delta(i)-alpha*(energy_max-i*energy_step))
   end do
 
-  ! open(unit=41, file="argand_l=2_v1=0.dat",  status="replace")
-  !
-  ! do i = 1, NEmax, 1
-  !    write(41,*) real(S(i)), real(-ci*S(i))
-  ! end do
-  !
-  ! close(unit=41, status="keep")
+  open(unit=41, file="argand_l=2_v1=0.dat",  status="replace")
+
+  do i = 1, NEmax, 1
+     write(41,*) real(S(i)), real(-ci*S(i))
+  end do
+
+  close(unit=41, status="keep")
 
 
   do i=1,NEmax-1
      time_delay(i)= hbaratto*(delta(i)-delta(i+1))/(energy_step)
   end do
 
-  open(unit=51, file="time_delay_v1=18.dat", status="replace")
-  do i=1,NEmax-1
-     write(51,*) energy_max-i*energy_step, time_delay(i)
-  end do
-  close(unit=51, status="keep")
+  !open(unit=51, file="time_delay_v1=18.dat", status="replace")
+  !do i=1,NEmax-1
+  !     write(51,*) energy_max-i*energy_step, time_delay(i)
+  !end do
+  !close(unit=51, status="keep")
 
+  !do i = 1, Nrmax, 1
+  ! write(*,*) i*stepsize_r, Vpot( i*stepsize_r)
+  !end do
 
 end program ue8

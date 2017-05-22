@@ -32,8 +32,8 @@ module parameter
   real (real64), parameter :: a0 = 0.6_real64 !fm
 
   ! parameters of additiona Gauss potential
-  real (real64), parameter :: V1 = 18._real64 !MeV
-  !real (real64), parameter :: V1 = 0._real64 !MeV
+  !real (real64), parameter :: V1 = 18._real64 !MeV
+  real (real64), parameter :: V1 = 0._real64 !MeV
   real (real64), parameter :: R1 = 6.00_real64 !fm
   real (real64), parameter :: a1 = 4.0_real64 !fm**2
 

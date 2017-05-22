@@ -24,7 +24,7 @@ contains
 
   end function w
 
-  pure function numerov(energy, l, direction_forward)
+  function numerov(energy, l, direction_forward)
     integer (int64) :: i
     logical, optional, intent(in) :: direction_forward
     integer (int64), intent(in) ::  l
@@ -34,7 +34,7 @@ contains
     real (real64), dimension(0:Nrmax) :: u
     real (real64) :: q_plus_one, q, q_minus_one
 
-
+    u=0._real64
 
     if (present(direction_forward) .and. direction_forward == .true. .or. (.not. present(direction_forward)) ) then
 
@@ -59,25 +59,35 @@ contains
        end do
 
     else if (present(direction_forward) .and. direction_forward == .false. ) then
-       u(Nrmax) = 0._real64
-       u(Nrmax-1) = 0.01_real64
 
-       q_plus_one = 0._real64
-       q = (1._real64+&
+       u(Nrmax) = exp(-sqrt(mhb2*energy)*Nrmax*stepsize_r)
+       u(Nrmax-1) = exp(-sqrt(mhb2*energy)*(Nrmax-1)*stepsize_r)
+
+       q_plus_one = (1._real64+&
             &stepsize_r*stepsize_r*&
             &w(stepsize_r*Nrmax,l,&
+            &energy)/12._real64)*u(Nrmax)
+
+       q = (1._real64+&
+            &stepsize_r*stepsize_r*&
+            &w(stepsize_r*(Nrmax-1),l,&
             &energy)/12._real64)*u(Nrmax-1)
 
-       do i = Nrmax-2, 0, -1
-          q_minus_one = 12._real64 * u(i+1) - 10._real64*q - q_plus_one
+       write(*,*) u(Nrmax), u(Nrmax-1), q_plus_one, q
+
+
+       do i = 2, Nrmax-1
+          q_minus_one = 12._real64 * u(Nrmax-i+1) - 10._real64*q - q_plus_one
           u(i) = q_minus_one/(1._real64+&
-               &stepsize_r*stepsize_r*w(stepsize_r*i,l,&
+               &stepsize_r*stepsize_r*w(stepsize_r*(Nrmax-i),l,&
                &energy)/12._real64)
 
           q_plus_one = q
           q = q_minus_one
 
        end do
+
+
 
     end if
 
@@ -123,3 +133,25 @@ contains
 
 
 end module functions_ue8
+
+! u(Nrmax) = exp(-sqrt(mhb2*energy)*Nrmax*stepsize_r)
+! u(Nrmax-1) = exp(-sqrt(mhb2*energy)*(Nrmax-1)*stepsize_r)
+!
+! q_plus_one =  (1._real64+&
+!      &stepsize_r*stepsize_r*&
+!      &w(stepsize_r*Nrmax,l,&
+!      &energy)/12._real64)*u(Nrmax)
+!
+! q = (1._real64+&
+!      &stepsize_r*stepsize_r*&
+!      &w(stepsize_r*(Nrmax-1),l,&
+!      &energy)/12._real64)*u(Nrmax-1)
+!
+! do i = Nrmax-2, 0, -1
+!    q_minus_one = 12._real64 * u(i+1) - 10._real64*q - q_plus_one
+!    u(i) = q_minus_one/(1._real64+&
+!         &stepsize_r*stepsize_r*w(stepsize_r*i,l,&
+!         &energy)/12._real64)
+!
+!    q_plus_one = q
+!    q = q_minus_one

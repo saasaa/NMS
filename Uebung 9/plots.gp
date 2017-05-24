@@ -16,6 +16,11 @@ plot "m_msqared4x4.dat" u 1:2  title "|M| - 4x4 Lattice" ps .5,  "m_msqared12x12
 
 set ylabel "<M>^2"
 
+
+plot "m_msqared4x4.dat" u 1:3  title "<M>^2 - 4x4 Lattice" ps .5,  "m_msqared12x12.dat" u 1:3  title "<M>^2 - 12x12 Lattice" ps .5, "m_msqared20x20.dat" u 1:3  title "<M>^2 - 20x20 Lattice"  ls 12 ps .5
+
+set ylabel "<M>^4"
+
 plot "m_msqared4x4.dat" u 1:3  title "<M>^2 - 4x4 Lattice" ps .5,  "m_msqared12x12.dat" u 1:3  title "<M>^2 - 12x12 Lattice" ps .5, "m_msqared20x20.dat" u 1:3  title "<M>^2 - 20x20 Lattice"  ls 12 ps .5
 
 set ylabel "<M>^4"

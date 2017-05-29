@@ -90,7 +90,7 @@ contains
   end function calculate_energy
 
   subroutine sweep(ising_lattice, size_of_lattice, no_of_sweeps, energy,magnetization, warmup_bool)
-    integer :: i, j
+    integer (int64) :: i, j
     integer (int64), intent(in) :: size_of_lattice, no_of_sweeps
     integer (int64), dimension(size_of_lattice,size_of_lattice), intent(inout) :: ising_lattice
     real (real64), intent(inout) :: energy, magnetization
@@ -100,8 +100,8 @@ contains
 
     integer (int64) :: random_lattice_point_x, random_lattice_point_y
 
-    do i = 1_int64, no_of_sweeps, 1
-       do j = 1_int64, size_of_lattice**2, 1
+    do i = 1, no_of_sweeps, 1
+       do j = 1, size_of_lattice**2, 1
 
           call random_number(randomx)
           call random_number(randomy)

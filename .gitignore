@@ -35,3 +35,5 @@ wiki/
 *.txt
 *.gif
 *.DS_Store
+*.ps
+*.at

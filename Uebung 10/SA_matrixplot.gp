@@ -1,5 +1,5 @@
 set term pdfcairo #enhanced
-set out 'ortsraum3dplot.pdf'
+set out 'SA_plot.pdf'
 
 #set sample 10000
 unset key
@@ -7,7 +7,7 @@ unset xtics
 unset ytics
 unset colorbox
 
-set title "Simulated Annealing"
+set title "Local"
 
 #set palette rgbformulae 33,13,10
 #set palette rgbformula -7,2,-7

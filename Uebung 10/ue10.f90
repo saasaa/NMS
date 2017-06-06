@@ -6,19 +6,26 @@ program ue10
 
   integer (int64) :: i,j,q
 
-  call init_random_seed()
+  !call init_random_seed()
   q=0
+  overall_error = 0._real64
+  correct_pixels = 0_int64
   ios=0
-  sweeps = 500!1024_int64
-  temperature = 1000
+  sweeps = 20
+  temperature = 200
   call initialize_SA_lattice(SA_image, Nimax, Njmax)
 
   call read_image(filename = "SimMRimage.dat", &
        &MR_image = MR_image, &
        &size_of_lattice_i = Nimax, size_of_lattice_j = Njmax)
 
-  !do k=1, 10
-  do while( temperature > temperature_final )
+  call read_image(filename = "CorrectSegImage.dat", &
+       &MR_image = Correct_image, &
+       &size_of_lattice_i = Nimax, size_of_lattice_j = Njmax)
+
+
+
+  do while(temperature > temperature_final)
      beta = 1._real64/temperature
      do i=1, sweeps
         do j = 1, Nimax*Njmax, 1
@@ -33,12 +40,17 @@ program ue10
 
            call random_number(random)
 
-           brain_tissue_new = int(random*5._real64)+1
+           brain_tissue_new = int(random*5._real64) + 1
 
-           energy_difference = calculate_energy_difference(SA_image, MR_image,&
+           if ( brain_tissue_new == brain_tissue_old ) then
+              brain_tissue_new = mod(brain_tissue_new + 1, 5) + 1
+           end if
+
+           energy_difference = calculate_energy_difference(SA_image,MR_image,&
                 &Nimax, Njmax, &
                 &random_lattice_point_x, random_lattice_point_y,&
                 &brain_tissue_new, brain_tissue_old)
+
 
            if (energy_difference*beta > 20._real64)  then
               r=0._real64
@@ -66,21 +78,33 @@ program ue10
      write(*,*) temperature
   end do
 
-  write(*,*) q
-
-  !  write(*,*) calculate_energy_difference(SA_image,&
-  ! &Nimax, Njmax, &
-  !&i,i, 2_int64, 1_int64)
-
-
-  !call output_image(filename = "SegSA.dat", &
-  !   &SA_image = SA_image, &
-  !  &size_of_lattice_i = Nimax, size_of_lattice_j = Njmax)
 
   call output_image_matrix(filename = "SegSAmatrix.dat", &
        &SA_image = SA_image, &
        &size_of_lattice_i = Nimax, size_of_lattice_j = Njmax)
 
-  write(*,*) 1d3, 5d-2, 11d-1, 3d0
+  do i=1, sweeps
+     do j = 1, Nimax*Njmax, 1
+
+     end do
+  end do
+
+  call calculate_pixels(Correct_image, correct_pixels, Nimax, Njmax)
+
+  call calculate_pixels(SA_image, sim_pixels, Nimax, Njmax)
+
+  write(*,*) "Fehler"
+
+  do i = 1, 5, 1
+     rel_pixels_error(i) = abs(correct_pixels(i) - sim_pixels(i))/real(correct_pixels(i),real64)
+  end do
+
+
+  do i = 1, 5, 1
+     write(*,*) rel_pixels_error(i) * 100
+     overall_error = overall_error + rel_pixels_error(i) * 100
+  end do
+
+  write(*,*) "gesamter Fehler",  overall_error
 
 end program ue10
